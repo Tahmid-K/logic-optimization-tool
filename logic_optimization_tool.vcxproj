@@ -106,7 +106,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="optimization_commands.cpp" />
     <ClCompile Include="pla_parser.cpp" />
-    <ClCompile Include="print_command.cpp" />
+    <ClCompile Include="print_commands.cpp" />
+    <ClCompile Include="read_commands.cpp" />
+    <ClCompile Include="timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.hpp" />
@@ -115,7 +117,9 @@
     <ClInclude Include="helpers.hpp" />
     <ClInclude Include="optimization_commands.hpp" />
     <ClInclude Include="pla_parser.hpp" />
-    <ClInclude Include="print_command.hpp" />
+    <ClInclude Include="print_commands.hpp" />
+    <ClInclude Include="read_commands.hpp" />
+    <ClInclude Include="timer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

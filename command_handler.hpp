@@ -13,11 +13,14 @@ namespace sis {
         ~command_handler() = default;
         command_handler(command_handler& the_copy) = default;
         command_handler& operator=(const command_handler& the_other) = default;
-
+        // factory method
         command* handle(std::ostream& a_stream);
-    protected:     
+    protected:
+        // factory method helpers
         command* create_help_command();
-        command* create_expresso_statement();
+        command* create_expresso_command();
+        command* create_read_pla_command();
+
         std::string current_token() {return tokens_[current_index_];}
         void next_token() {current_index_++;}
         bool has_remaining() const {return current_index_ < tokens_.size();}

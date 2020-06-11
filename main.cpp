@@ -7,6 +7,7 @@
 
 int main() {
     auto run = true;
+    std::cout << "UC San Diego, SIS Clone 1.0 (compiled June 11 2020 17:14:33)" << std::endl;
     do {
         std::string the_user_input;
         std::cout << "sis> ";
@@ -23,7 +24,8 @@ int main() {
                     the_command->display(std::cout);
                     delete the_command;
                 }
-                std::cout << "invalid command" << std::endl;
+                else
+                    std::cout << "invalid command" << std::endl;
             }
         }
     }

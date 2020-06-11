@@ -15,7 +15,7 @@ namespace sis {
     };
     class command {
     public:
-        command(command_type a_type = command_type::invalid) : a_type_(a_type) {}
+        explicit command(const command_type a_type = command_type::invalid) : a_type_(a_type) {}
         virtual ~command() = default;
         command(command& a_copy) = default;
         command& operator=(const command& a_command) = default;
