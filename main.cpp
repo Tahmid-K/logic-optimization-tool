@@ -18,7 +18,7 @@ int main() {
             else if (!the_user_input.empty()) {
                 std::stringstream a_string_stream(the_user_input);
                 auto the_cmd_handler = sis::command_handler(a_string_stream);
-                auto* the_command = the_cmd_handler.handle(std::cout);
+                auto* the_command = the_cmd_handler.handle();
                 if(the_command != nullptr) {
                     the_command->execute();
                     the_command->display(std::cout);

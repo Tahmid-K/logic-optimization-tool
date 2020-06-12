@@ -4,12 +4,12 @@ namespace sis {
     optimization_command::optimization_command(const command_type a_command_type) : command(a_command_type) {
     }
 
-    expresso_command::expresso_command(const command_type a_command_type) : optimization_command(a_command_type){
+    espresso_command::espresso_command(covers* a_cover) : optimization_command(command_type::expresso), a_cover_(a_cover) {
     }
 
-    void expresso_command::execute() {
+    void espresso_command::execute() {
     }
 
-    void expresso_command::display(std::ostream& a_stream) {
+    void espresso_command::display(std::ostream& a_stream) {
     }
 }

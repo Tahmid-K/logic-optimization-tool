@@ -3,7 +3,7 @@
 
 namespace sis {
 
-    help_command::help_command(const command_type a_type) : command(a_type) {
+    help_command::help_command() : command(command_type::help) {
     }
 
     void help_command::execute() {
@@ -17,5 +17,14 @@ namespace sis {
         for(const auto& a_string : help_statements) {
             a_stream << a_string << std::endl;
         }
+    }
+
+    write_eqn_command::write_eqn_command(covers* the_covers) : the_covers_(the_covers) {
+    }
+
+    void write_eqn_command::execute() {
+    }
+
+    void write_eqn_command::display(std::ostream& a_stream) {
     }
 }

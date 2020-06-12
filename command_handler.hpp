@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "command.hpp"
+#include "covers.hpp"
 
 namespace sis {
     class command_handler {
@@ -13,18 +14,22 @@ namespace sis {
         ~command_handler() = default;
         command_handler(command_handler& the_copy) = default;
         command_handler& operator=(const command_handler& the_other) = default;
-        // factory method
-        command* handle(std::ostream& a_stream);
+        command* handle();
+        void set_covers(covers* the_covers) {
+            delete the_covers_;
+            the_covers_ = the_covers;
+        }
     protected:
-        // factory method helpers
         command* create_help_command();
-        command* create_expresso_command();
+        command* create_espresso_command();
         command* create_read_pla_command();
+        command* create_write_eqn_command();
 
         std::string current_token() {return tokens_[current_index_];}
         void next_token() {current_index_++;}
-        bool has_remaining() const {return current_index_ < tokens_.size();}
+        [[nodiscard]] bool has_remaining() const {return current_index_ < tokens_.size();}
         std::vector<std::string> tokens_;
+        covers* the_covers_;
         uint32_t current_index_;
     };
 }
