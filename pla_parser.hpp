@@ -13,6 +13,7 @@ namespace sis {
         bool parse_pla_body(covers* the_covers);
         bool parse_literal(covers* the_covers);
         bool parse_end();
+        static bool validate_implicant(covers* the_covers, const std::vector<std::string>& a_literal);
 
     };
 }

@@ -10,15 +10,12 @@
 namespace sis {
     class command_handler {
     public:
-        command_handler( std::istream& a_stream);
-        ~command_handler() = default;
+        explicit command_handler();
+        ~command_handler();
         command_handler(command_handler& the_copy) = default;
         command_handler& operator=(const command_handler& the_other) = default;
-        command* handle();
-        void set_covers(covers* the_covers) {
-            delete the_covers_;
-            the_covers_ = the_covers;
-        }
+        command* handle(std::string the_user_input);
+        void set_covers(covers* the_covers) {the_covers_ = the_covers;}
     protected:
         command* create_help_command();
         command* create_espresso_command();

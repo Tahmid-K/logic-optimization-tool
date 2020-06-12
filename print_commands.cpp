@@ -2,7 +2,6 @@
 #include "print_commands.hpp"
 
 namespace sis {
-
     help_command::help_command() : command(command_type::help) {
     }
 
@@ -26,5 +25,9 @@ namespace sis {
     }
 
     void write_eqn_command::display(std::ostream& a_stream) {
+        a_stream << "INORDER =";
+        the_covers_->show_inputs(a_stream);
+        a_stream << "OUTORDER = ";
+        the_covers_->show_outputs(a_stream);
     }
 }

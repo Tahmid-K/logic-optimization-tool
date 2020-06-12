@@ -13,11 +13,13 @@ namespace sis {
 
     bool pla_parser::parse(command_handler& a_command_handler) {
         if(open_file()) {
-            auto* the_covers = new covers();
-            a_command_handler.set_covers(the_covers);
+            auto* the_covers = new covers();         
             if(parse_pla_header(the_covers)) {
                 if(parse_pla_body(the_covers)) {
-                    return true;
+                    if(parse_end()) {
+                        a_command_handler.set_covers(the_covers);
+                        return true;
+                    }
                 }
             }
             delete the_covers;
@@ -33,7 +35,7 @@ namespace sis {
     bool pla_parser::parse_pla_header(covers* the_covers) {
         const static auto header_size = 5;
         std::string the_line;
-        for(auto i = 0; i < header_size-2; i++) {            
+        for(auto i = 0; i < header_size-3; i++) {            
             if(!std::getline(a_stream_, the_line)) {
                 return false;
             }
@@ -68,7 +70,7 @@ namespace sis {
                         return false;
                     }
                 }
-                return parse_end();
+                return true;
             }
         }
         return false;
@@ -77,7 +79,18 @@ namespace sis {
     bool pla_parser::parse_literal(covers* the_covers) {
         std::string the_line;
         if(std::getline(a_stream_, the_line)) {
-            
+            auto implicant_token = helpers::string_to_tokens(the_line);
+            if(validate_implicant(the_covers, implicant_token)) {
+                const auto the_implicant = implicant_token[0];
+                const auto the_outputs = implicant_token[1];
+                for(unsigned int i = 0; i < the_outputs.size(); i++) {
+                    if(the_outputs[i] ==  '1') {
+                        the_covers->add_implicant(the_implicant, i);
+                    }
+                }
+                // TODO handle don't care set
+                return true;
+            }
         }
         return false;
     }
@@ -85,5 +98,17 @@ namespace sis {
     bool pla_parser::parse_end() {
         std::string the_line;
         return static_cast<bool>(std::getline(a_stream_, the_line)) && the_line == ".e";
+    }
+
+    bool pla_parser::validate_implicant(covers* the_covers, const std::vector<std::string>& a_literal) {
+        // literal should be the same size as the inputs and the the number of outputs should be the same as the function
+        if(a_literal.size() == 2) {
+            if(a_literal[0].size() == the_covers->get_input_names().size()) {
+                if(a_literal[1].size() == the_covers->get_functions().size()) {
+                    return true;
+                }
+            }   
+        }
+        return false;
     }
 }

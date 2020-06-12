@@ -102,9 +102,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="command_handler.cpp" />
+    <ClCompile Include="covers.cpp" />
     <ClCompile Include="file_parser.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="optimization_commands.cpp" />
+    <ClCompile Include="espresso.cpp" />
     <ClCompile Include="pla_parser.cpp" />
     <ClCompile Include="print_commands.cpp" />
     <ClCompile Include="read_commands.cpp" />
@@ -113,9 +114,10 @@
   <ItemGroup>
     <ClInclude Include="command.hpp" />
     <ClInclude Include="command_handler.hpp" />
+    <ClInclude Include="covers.hpp" />
     <ClInclude Include="file_parser.hpp" />
     <ClInclude Include="helpers.hpp" />
-    <ClInclude Include="optimization_commands.hpp" />
+    <ClInclude Include="espresso.hpp" />
     <ClInclude Include="pla_parser.hpp" />
     <ClInclude Include="print_commands.hpp" />
     <ClInclude Include="read_commands.hpp" />

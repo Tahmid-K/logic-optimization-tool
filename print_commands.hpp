@@ -2,10 +2,8 @@
 #include "command.hpp"
 #include <string>
 #include <ostream>
-
+#include "covers.hpp"
 namespace sis {
-    class covers;
-
     class print_command :
         public command {
     };

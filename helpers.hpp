@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <string>
+#include <sstream>
 
 namespace sis {
     class helpers {
@@ -18,6 +19,13 @@ namespace sis {
                 tokens.push_back(a_token);
             }
             return tokens;
+        }
+
+        static std::string replace_char(const std::string& a_string, unsigned int index, const std::string&
+                                        the_replacement) {
+            auto replaced_string = a_string;
+            replaced_string.replace(index, 1, the_replacement);
+            return replaced_string;
         }
     };
 }
