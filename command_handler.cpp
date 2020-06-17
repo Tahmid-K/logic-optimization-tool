@@ -4,10 +4,11 @@
 #include <unordered_map>
 
 
+
+#include "espresso.hpp"
 #include "helpers.hpp"
-#include "optimization_commands.hpp"
-#include "print_commands.hpp"
-#include "read_commands.hpp"
+#include "print.hpp"
+#include "read.hpp"
 
 
 namespace sis {
@@ -22,7 +23,7 @@ namespace sis {
         delete the_covers_;
     }
 
-    command* command_handler::handle(std::string the_user_input) {
+    command* command_handler::handle(const std::string& the_user_input) {
         static input_to_command_map the_map = {
             {"help", &command_handler::create_help_command},
             {"read_pla", &command_handler::create_read_pla_command},

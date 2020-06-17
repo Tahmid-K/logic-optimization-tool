@@ -10,103 +10,118 @@ namespace sis {
     }
 
     void espresso_command::execute() {
-        if(the_covers_ != nullptr) {
-            for(auto a_function : the_covers_->get_functions()) {
-                optimize_function(a_function);
-            }
-        }
-    }
-
-    
-
-    void espresso_command::optimize_function(function& a_function) {
-        for(auto& an_implicant : a_function.second) {
-            for(unsigned int i = 0; i < an_implicant.size(); i++) {
-                if(an_implicant[i] != '-') {
-                    auto expanded_implicant = helpers::replace_char(an_implicant,i,"-");
-                    if(expand(expanded_implicant, a_function)) {                        
-                        an_implicant = expanded_implicant;
+        if (the_covers_ != nullptr) {
+            // for each function         
+            for (unsigned int i = 0; i < the_covers_->get_on_set().size(); i++) {
+                auto& the_on_set = the_covers_->get_on_set()[i];
+                auto& the_dc_set = the_covers_->get_dc_set()[i];
+                // for each implicant in the on set
+                for (auto& an_implicant : the_on_set) {
+                    // attempt to expand
+                    if (expand(an_implicant, the_on_set, the_dc_set)) {
+                        // remove covered implicants if successful expansion
+                        remove_covered_implicants(an_implicant, the_on_set);
                     }
                 }
             }
-            remove_covered_implicants(an_implicant, a_function); // ignore if found, else remove covered implicants
         }
     }
 
-    /**
-     * @brief recursively checks whether implicant is covered
-     * @param an_implicant 
-     * @param a_function 
-     * @return true if valid expansion
-    */
-    bool espresso_command::expand(const std::string& an_implicant, function& a_function) {
-        // iterate through each element of the implicant
-        for(unsigned int i = 0; i < an_implicant.size(); i++) {
-            if(an_implicant[i] == '-') {
-                const auto one_implicant = helpers::replace_char(an_implicant, i,"1");
-                const auto zero_implicant = helpers::replace_char(an_implicant, i,"0");
-                return expand(one_implicant,a_function) && expand(zero_implicant, a_function);
+    void espresso_command::display(std::ostream& a_stream) {
+    }
+
+
+    bool espresso_command::validity_check(const std::string& an_implicant, implicants& the_on_set,
+                                          implicants& the_dc_set) {
+        for (unsigned int i = 0; i < an_implicant.size(); i++) {
+            if (an_implicant[i] == '-') {
+                const auto one_implicant = helpers::replace_char(an_implicant, i, "1");
+                const auto zero_implicant = helpers::replace_char(an_implicant, i, "0");
+                return validity_check(one_implicant, the_on_set, the_dc_set)
+                    && validity_check(zero_implicant, the_on_set, the_dc_set);
             }
         }
-        return validity_check(an_implicant, a_function);        
+        return is_covered(an_implicant, the_on_set) || is_covered(an_implicant, the_dc_set);
     }
 
-    bool espresso_command::reduce(const std::string& an_implicant, function& a_function) {
-        return true;
+    bool espresso_command::is_covered(const std::string& an_implicant, implicants& the_set) {
+        // for every implicant an in the set
+        for (auto set_implicant : the_set) {
+            // assume the implicant from set does not cover 
+            auto not_covered = true;
+            for (unsigned int i = 0; i < set_implicant.size(); i++) {
+                // check every character for a discrepancy
+                if (set_implicant[i] != '-') {
+                    if (an_implicant[i] != set_implicant[i]) {
+                        not_covered = false;
+                    }
+                }
+            }
+            if (not_covered)
+                return true;
+        }
+        return false;
+    }
+
+
+    bool espresso_command::expand(std::string& an_implicant, implicants& the_on_set, implicants& the_dc_set) {
+        auto has_expanded = false;
+        for (unsigned int j = 0; j < an_implicant.size(); j++) {
+            // if literal is not a dc
+            if (an_implicant[j] != '-') {
+                // attempt to expand
+                auto expanded_implicant = helpers::replace_char(an_implicant, j, "-");
+                if (validity_check(expanded_implicant, the_on_set, the_dc_set)) {
+                    an_implicant = expanded_implicant;
+                    has_expanded = true;
+                }
+            }
+        }
+        return has_expanded;
+    }
+
+    bool espresso_command::reduce(const std::string& an_implicant, implicants& a_function) {
+        return false;
     }
 
     /**
      * @brief remove covered implicants and add the implicant to the on set
      * @param an_implicant 
-     * @param a_function 
+     * @param the_on_set 
      * @return true
     */
-    bool espresso_command::remove_covered_implicants(const std::string& an_implicant, function& a_function) {
+    bool espresso_command::remove_covered_implicants(const std::string& an_implicant, implicants& the_on_set) {
         std::vector<std::string> removal_list;
-        if(!validity_check(an_implicant,a_function)) {
-            for(auto another_implicant : a_function.second) {
-                auto covered = true;
-                for(unsigned int i = 0; i < another_implicant.size(); i++) {
-                    if(an_implicant[i] != '-') {
-                        if(an_implicant[i] != another_implicant[i]) {
-                            covered = false;
-                        }
+        // for each implicant in the on set
+        for (auto on_implicant : the_on_set) {
+            // assume the on implicant is covered
+            auto covered = true;
+            // for every literal in the implicant
+            for (unsigned int i = 0; i < on_implicant.size(); i++) {
+                if (an_implicant[i] != '-') { // what if the literal in the on set is a don't care?
+                    // check for a discrepancy
+                    if (an_implicant[i] != on_implicant[i]) {
+                        covered = false;
                     }
                 }
-                if(covered) {
-                    removal_list.push_back(another_implicant);
-                }
             }
-            for(const auto& the_string : removal_list) {
-                auto itr = std::find(a_function.second.begin(), a_function.second.end(), the_string);
-                if (itr != a_function.second.end()) 
-                    a_function.second.erase(itr);
+            // ignore discrepancy if the implicants match
+            if (an_implicant == on_implicant) { // move this
+                covered = false;
             }
-            a_function.second.insert(a_function.second.begin(), an_implicant);
+            // mark the implicant for removal if it is covered
+            // TODO: verify error does occur as a result of deferring removal until all checks are made
+            if (covered) {
+                removal_list.push_back(on_implicant);
+            }
+        }
+        for (const auto& the_string : removal_list) {
+            auto itr = std::find(the_on_set.begin(), the_on_set.end(), the_string);
+            if (itr != the_on_set.end())
+                the_on_set.erase(itr);
         }
         return true;
     }
 
-    /**
-     * @brief determines whether implicant exists in on or dc set
-     * @param an_implicant 
-     * @param a_function 
-     * @return true if implicant exists, else false
-    */
-    bool espresso_command::validity_check(const std::string& an_implicant, function& a_function) {
-        return is_on_set(an_implicant, a_function) || is_dc_set(an_implicant, a_function);
-    }
-
-
-    bool espresso_command::is_on_set(const std::string& an_implicant, function& a_function) {
-        return std::find(a_function.second.begin(), a_function.second.end(), an_implicant) != a_function.second.end(); 
-    }
-
-    bool espresso_command::is_dc_set(const std::string& an_implicant, function& a_function) {
-        return false;
-    }
-
-    void espresso_command::display(std::ostream& a_stream) {
-    }
 
 }

@@ -27,19 +27,16 @@
     <ClCompile Include="pla_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="read_commands.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="print_commands.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="covers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="espresso.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="print.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="read.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,16 +59,16 @@
     <ClInclude Include="timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="read_commands.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="print_commands.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="covers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="espresso.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="print.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="read.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

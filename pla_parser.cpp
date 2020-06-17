@@ -50,7 +50,9 @@ namespace sis {
             if(std::getline(a_stream_, the_line)) {
                 auto output_tokens = helpers::string_to_tokens(the_line);
                 for(unsigned int i = 1; i < output_tokens.size(); i++) {
-                    the_covers->add_function({output_tokens[i], implicants()});
+                    the_covers->add_output_names(output_tokens[i]);
+                    the_covers->get_on_set().emplace_back();
+                    the_covers->get_dc_set().emplace_back();
                 }
                 return true;
             }
@@ -84,11 +86,13 @@ namespace sis {
                 const auto the_implicant = implicant_token[0];
                 const auto the_outputs = implicant_token[1];
                 for(unsigned int i = 0; i < the_outputs.size(); i++) {
-                    if(the_outputs[i] ==  '1') {
-                        the_covers->add_implicant(the_implicant, i);
+                    if(the_outputs[i] == '1') {
+                        the_covers->add_on_set(the_implicant, i);
+                    }
+                    else if(the_outputs[i] == '-') {
+                        the_covers->add_dc_set(the_implicant, i);
                     }
                 }
-                // TODO handle don't care set
                 return true;
             }
         }
@@ -104,7 +108,7 @@ namespace sis {
         // literal should be the same size as the inputs and the the number of outputs should be the same as the function
         if(a_literal.size() == 2) {
             if(a_literal[0].size() == the_covers->get_input_names().size()) {
-                if(a_literal[1].size() == the_covers->get_functions().size()) {
+                if(a_literal[1].size() == the_covers->get_output_names().size()) {
                     return true;
                 }
             }   

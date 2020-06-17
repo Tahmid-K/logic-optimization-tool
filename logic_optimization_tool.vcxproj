@@ -107,9 +107,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="espresso.cpp" />
     <ClCompile Include="pla_parser.cpp" />
-    <ClCompile Include="print_commands.cpp" />
-    <ClCompile Include="read_commands.cpp" />
-    <ClCompile Include="timer.cpp" />
+    <ClCompile Include="print.cpp" />
+    <ClCompile Include="read.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.hpp" />
@@ -119,8 +118,8 @@
     <ClInclude Include="helpers.hpp" />
     <ClInclude Include="espresso.hpp" />
     <ClInclude Include="pla_parser.hpp" />
-    <ClInclude Include="print_commands.hpp" />
-    <ClInclude Include="read_commands.hpp" />
+    <ClInclude Include="print.hpp" />
+    <ClInclude Include="read.hpp" />
     <ClInclude Include="timer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

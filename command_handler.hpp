@@ -14,7 +14,7 @@ namespace sis {
         ~command_handler();
         command_handler(command_handler& the_copy) = default;
         command_handler& operator=(const command_handler& the_other) = default;
-        command* handle(std::string the_user_input);
+        command* handle(const std::string& the_user_input);
         void set_covers(covers* the_covers) {the_covers_ = the_covers;}
     protected:
         command* create_help_command();
