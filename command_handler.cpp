@@ -102,6 +102,7 @@ namespace sis {
         if(the_covers_ != nullptr) {
             return new print_stats_command(the_covers_);
         }
+        return nullptr;
     }
 
 }

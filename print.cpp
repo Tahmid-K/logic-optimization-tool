@@ -11,7 +11,7 @@ namespace sis {
     void help_command::display(std::ostream& a_stream) {
         const static std::string help_statements[] = {
             "help", "read_pla", "expresso", "print_stats",
-            "history", "clear", "write_eqn", "write_pla", "invalid"
+            "quit", "write_eqn", "time"
         };
         for (const auto& a_string : help_statements) {
             a_stream << a_string << std::endl;
@@ -78,16 +78,46 @@ namespace sis {
     }
 
     void print_stats_command::display(std::ostream& a_stream) {
-        // TODO save file name when parsing so that can be output as well
+        // TODO save file name when parsing so that it can be output as well
         a_stream << "file_name_placeholder  ";
         a_stream << "pi= "  << the_covers_->get_input_names().size() << "  ";
+        a_stream << "po= "  << the_covers_->get_output_names().size() << "  ";
         a_stream << "node= NULL  ";
         a_stream << "latch= NULL  ";
         a_stream << "lits(sop)= " << count_literals() << "  ";
         a_stream << "lits(ff)= NULL  ";
         a_stream << "product_terms= " << count_product_terms();
+        a_stream << std::endl;
     }
 
-    uint32_t print_stats_command::count_literals() {
+    uint32_t print_stats_command::count_literals() const {
+        auto num_literals = 0;
+        auto& the_on_sets = the_covers_->get_on_sets();
+        // for the on set of every function
+        for(auto& an_on_set : the_on_sets) {
+            // for every implicant in the on set
+            for(auto& an_implicant : an_on_set) {
+                // for every literal in the implicant
+                for(auto a_literal : an_implicant) {
+                    if(a_literal != '-') {
+                        num_literals++;
+                    }
+                }
+            }
+        }
+        return num_literals;
+    }
+
+    uint32_t print_stats_command::count_product_terms() const {
+        auto num_product_terms = 0;
+        auto& the_on_sets = the_covers_->get_on_sets();
+        // for the on set of every function
+        for(auto& an_on_set : the_on_sets) {
+            // for every implicant in the on set
+            for(auto& an_implicant : an_on_set) {
+                num_product_terms++;
+            }
+        }
+        return num_product_terms;
     }
 }

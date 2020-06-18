@@ -41,8 +41,8 @@ namespace sis {
         void execute() override;
         void display(std::ostream& a_stream) override;
     protected:
-        uint32_t count_literals();
-        uint32_t count_product_terms();
+        uint32_t count_literals() const;
+        uint32_t count_product_terms() const;
         covers* the_covers_;
     };
 }

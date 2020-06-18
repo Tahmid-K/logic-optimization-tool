@@ -30,6 +30,10 @@ namespace sis {
         }
     }
 
+    /**
+     * @brief must override, displays nothing
+     * @param a_stream 
+    */
     void espresso_command::display(std::ostream& a_stream) {
     }
 
@@ -49,11 +53,12 @@ namespace sis {
                 // replace the literal with a don't care
                 const auto one_implicant = helpers::replace_char(an_implicant, i, "1");
                 const auto zero_implicant = helpers::replace_char(an_implicant, i, "0");
-                // determine whether
+                // check validity of new implicant
                 return validity_check(one_implicant, the_on_set, the_dc_set)
                     && validity_check(zero_implicant, the_on_set, the_dc_set);
             }
         }
+        // check if the implicant, with no don't cares, is covered by the on set or dc set
         return is_covered(an_implicant, the_on_set) || is_covered(an_implicant, the_dc_set);
     }
 
@@ -123,18 +128,19 @@ namespace sis {
         for (auto on_implicant : the_on_set) {
             // assume the on implicant is covered
             auto covered = true;
-            // for every literal in the implicant
-            for (unsigned int i = 0; i < on_implicant.size(); i++) {
-                if (an_implicant[i] != '-') { 
-                    // check for a discrepancy
-                    if (an_implicant[i] != on_implicant[i]) {
-                        covered = false;
+            // ignore if the implicants match
+            if (an_implicant != on_implicant) {
+                // for every literal in the implicant
+                for (unsigned int i = 0; i < on_implicant.size(); i++) {
+                    if (an_implicant[i] != '-') {
+                        // check for a discrepancy
+                        if (an_implicant[i] != on_implicant[i]) {
+                            covered = false;
+                        }
                     }
                 }
             }
-            // ignore discrepancy if the implicants match
-            // TODO: perform this check earlier
-            if (an_implicant == on_implicant) { 
+            else {
                 covered = false;
             }
             // mark the implicant for removal if it is covered

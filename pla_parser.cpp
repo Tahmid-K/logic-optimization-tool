@@ -112,7 +112,7 @@ namespace sis {
     }
 
     bool pla_parser::validate_implicant(covers* the_covers, const std::vector<std::string>& a_literal) {
-        // literal should be the same size as the inputs and the the number of outputs should be the same as the function
+        // literal should be the same size as the inputs and the the number of outputs should be the same as the number of functions
         if (a_literal.size() == 2) {
             if (a_literal[0].size() == the_covers->get_input_names().size()) {
                 if (a_literal[1].size() == the_covers->get_output_names().size()) {
