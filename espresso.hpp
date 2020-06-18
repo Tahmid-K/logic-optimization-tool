@@ -14,13 +14,12 @@ namespace sis {
     protected:
         covers* the_covers_;
         std::vector<std::string> add_list_;
-        void optimize_function(implicants& the_on_set);
         // Expresso methods
         // EXPAND, REDUCE, REMOVE_COVERED_IMPLICANTS, VALIDITY_CHECK
-        bool expand(std::string& an_implicant, implicants& the_on_set, implicants& the_dc_set);
+        static bool expand(std::string& an_implicant, implicants& the_on_set, implicants& the_dc_set);
         bool reduce(const std::string& an_implicant, implicants& a_function);
-        bool remove_covered_implicants(const std::string& an_implicant, implicants& the_on_set);
-        bool validity_check(const std::string& an_implicant, implicants& the_on_set, implicants& the_dc_set);
+        bool remove_covered_implicants(const std::string& an_implicant, implicants& the_on_set) const;
+        static bool validity_check(const std::string& an_implicant, implicants& the_on_set, implicants& the_dc_set);
         static bool is_covered(const std::string& an_implicant, implicants& the_set);
 
         

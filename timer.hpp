@@ -5,30 +5,35 @@ namespace sis {
     class timer {
     public:
 
-        timer() {
-            stopped = started = std::chrono::high_resolution_clock::now();
-        };
+        explicit timer(const bool skip = true) : skip_(skip) {}
 
-        timer& start() {
-            started = std::chrono::high_resolution_clock::now();
-            return *this;
+        void start() {
+            if(!skip_) {
+                start_ = std::chrono::high_resolution_clock::now();
+            }
         }
 
-        timer& stop() {
-            stopped = std::chrono::high_resolution_clock::now();
-            return *this;
+        void stop() {
+            if(!skip_) {
+                end_ = std::chrono::high_resolution_clock::now();
+            }
         }
 
-        double elapsed() const {
-            if (started != stopped) {
-                const std::chrono::duration<double> elapsed = stopped - started;
-                return elapsed.count(); 
+        [[nodiscard]] double get_duration() const {
+            if (start_ != end_) {
+                const std::chrono::duration<double> the_duration = end_ - start_;
+                return the_duration.count(); 
             }
             return 0.0;
         }
+
+        [[nodiscard]] bool get_skip() const {return skip_;}
+        void set_skip(const bool skip) {skip_ = skip;}
     protected:
-        std::chrono::time_point<std::chrono::high_resolution_clock> started;
-        std::chrono::time_point<std::chrono::high_resolution_clock> stopped;
+        // temp solution
+        bool skip_;
+        std::chrono::time_point<std::chrono::high_resolution_clock> start_;
+        std::chrono::time_point<std::chrono::high_resolution_clock> end_;
         
     };
 }

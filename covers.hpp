@@ -18,8 +18,8 @@ namespace sis {
 
         std::vector<std::string>& get_input_names() {return input_names_;}
         std::vector<std::string>& get_output_names() {return output_names_;}
-        std::vector<implicants>& get_on_set() {return on_set_;}
-        std::vector<implicants>& get_dc_set() {return dc_set_;}
+        std::vector<implicants>& get_on_sets() {return on_sets_;}
+        std::vector<implicants>& get_dc_sets() {return dc_sets_;}
 
         void show_inputs(std::ostream& a_stream);
         void show_outputs(std::ostream& a_stream);
@@ -27,7 +27,7 @@ namespace sis {
     protected:     
         std::vector<std::string> input_names_;
         std::vector<std::string> output_names_;
-        std::vector<implicants> on_set_;
-        std::vector<implicants> dc_set_;
+        std::vector<implicants> on_sets_;
+        std::vector<implicants> dc_sets_;
     };
 }

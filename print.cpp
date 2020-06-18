@@ -1,4 +1,3 @@
-
 #include "print.hpp"
 
 
@@ -11,10 +10,10 @@ namespace sis {
 
     void help_command::display(std::ostream& a_stream) {
         const static std::string help_statements[] = {
-        "help", "read_pla", "expresso", "print_stats",
-        "history", "clear","write_eqn", "write_pla","invalid"
+            "help", "read_pla", "expresso", "print_stats",
+            "history", "clear", "write_eqn", "write_pla", "invalid"
         };
-        for(const auto& a_string : help_statements) {
+        for (const auto& a_string : help_statements) {
             a_stream << a_string << std::endl;
         }
     }
@@ -30,6 +29,65 @@ namespace sis {
         the_covers_->show_inputs(a_stream);
         a_stream << "OUTORDER = ";
         the_covers_->show_outputs(a_stream);
-        //for(auto a_function : the_covers_->function)
+        for (unsigned int i = 0; i < the_covers_->get_output_names().size(); i++) {
+            display_function(a_stream, i);
+            a_stream << std::endl;
+        }
+    }
+
+    void write_eqn_command::display_function(std::ostream& a_stream, const unsigned int index) const {
+        a_stream << the_covers_->get_output_names()[index] << " = ";
+        auto& the_on_set = the_covers_->get_on_sets()[index];
+        if (!the_on_set.empty()) {
+            for (auto i = the_on_set.size() - 1; i > 0 ; i--) {
+                display_implicant(a_stream, the_on_set[i]);
+                a_stream << " + ";
+            }
+            display_implicant(a_stream, the_on_set[0]);
+            a_stream << ";";
+            return;
+        }
+        a_stream << "0";
+    }
+
+    void write_eqn_command::display_implicant(std::ostream& a_stream, const std::string& an_implicant) const {
+        // for each literal in the implicant
+        auto first_literal = true;
+        for (unsigned int i = 0; i < an_implicant.size(); i++) {
+            // list if the literal is not a don't care
+            if (an_implicant[i] != '-') {
+                // if not the first literal prepend with multiplication sign
+                if (!first_literal) {
+                    a_stream << "*";
+                }
+                first_literal = false;
+                // prepend with ! if 0
+                if (an_implicant[i] == '0') {
+                    a_stream << "!";
+                }
+                a_stream << the_covers_->get_input_names()[i];               
+            }
+
+        }
+    }
+
+    print_stats_command::print_stats_command(covers* the_covers) : the_covers_(the_covers) {
+    }
+
+    void print_stats_command::execute() {
+    }
+
+    void print_stats_command::display(std::ostream& a_stream) {
+        // TODO save file name when parsing so that can be output as well
+        a_stream << "file_name_placeholder  ";
+        a_stream << "pi= "  << the_covers_->get_input_names().size() << "  ";
+        a_stream << "node= NULL  ";
+        a_stream << "latch= NULL  ";
+        a_stream << "lits(sop)= " << count_literals() << "  ";
+        a_stream << "lits(ff)= NULL  ";
+        a_stream << "product_terms= " << count_product_terms();
+    }
+
+    uint32_t print_stats_command::count_literals() {
     }
 }

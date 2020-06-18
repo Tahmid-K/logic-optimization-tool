@@ -1,6 +1,5 @@
 #pragma once
 #include <iosfwd>
-
 namespace sis {
     enum class command_type {
         help,
@@ -19,7 +18,6 @@ namespace sis {
         virtual ~command() = default;
         command(command& a_copy) = default;
         command& operator=(const command& a_command) = default;
-
         [[nodiscard]] command_type get_type() const {return a_type_;}
         virtual void execute() = 0;
         virtual void display(std::ostream& a_stream) = 0;

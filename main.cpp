@@ -19,8 +19,10 @@ int main() {
             else if (!the_user_input.empty()) {
                 auto* the_command = the_cmd_handler->handle(the_user_input);
                 if(the_command != nullptr) {
+                    the_cmd_handler->start_timer();
                     the_command->execute();
                     the_command->display(std::cout);
+                    the_cmd_handler->end_timer(std::cout);
                     delete the_command;
                 }
                 else

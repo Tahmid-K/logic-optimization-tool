@@ -9,12 +9,15 @@ namespace sis {
     espresso_command::espresso_command(covers* a_cover) : command(command_type::expresso), the_covers_(a_cover) {
     }
 
+    /**
+     * @brief executes espresso heuristic on every function in the current set of covers
+    */
     void espresso_command::execute() {
         if (the_covers_ != nullptr) {
             // for each function         
-            for (unsigned int i = 0; i < the_covers_->get_on_set().size(); i++) {
-                auto& the_on_set = the_covers_->get_on_set()[i];
-                auto& the_dc_set = the_covers_->get_dc_set()[i];
+            for (unsigned int i = 0; i < the_covers_->get_on_sets().size(); i++) {
+                auto& the_on_set = the_covers_->get_on_sets()[i];
+                auto& the_dc_set = the_covers_->get_dc_sets()[i];
                 // for each implicant in the on set
                 for (auto& an_implicant : the_on_set) {
                     // attempt to expand
@@ -30,13 +33,23 @@ namespace sis {
     void espresso_command::display(std::ostream& a_stream) {
     }
 
-
+    /**
+     * @brief determines whether the given implicant is valid for the given on/dc set
+     * @param an_implicant - implicant to be checked
+     * @param the_on_set - the on set of the function being optimized
+     * @param the_dc_set - the dc set of the function being optimized
+     * @return true if the implicant is covered by the on/dc set, false otherwise
+    */
     bool espresso_command::validity_check(const std::string& an_implicant, implicants& the_on_set,
                                           implicants& the_dc_set) {
+        // for each literal in the implicant
         for (unsigned int i = 0; i < an_implicant.size(); i++) {
+            // if the literal is not a don't care
             if (an_implicant[i] == '-') {
+                // replace the literal with a don't care
                 const auto one_implicant = helpers::replace_char(an_implicant, i, "1");
                 const auto zero_implicant = helpers::replace_char(an_implicant, i, "0");
+                // determine whether
                 return validity_check(one_implicant, the_on_set, the_dc_set)
                     && validity_check(zero_implicant, the_on_set, the_dc_set);
             }
@@ -44,6 +57,12 @@ namespace sis {
         return is_covered(an_implicant, the_on_set) || is_covered(an_implicant, the_dc_set);
     }
 
+    /**
+     * @brief determines whether the given implicant is covered by the given set
+     * @param an_implicant - implicant to be checked
+     * @param the_set - set to be checked
+     * @return true if the implicant is covered by the given set, false otherwise
+    */
     bool espresso_command::is_covered(const std::string& an_implicant, implicants& the_set) {
         // for every implicant an in the set
         for (auto set_implicant : the_set) {
@@ -63,7 +82,13 @@ namespace sis {
         return false;
     }
 
-
+    /**
+     * @brief attempts to expand the implicant
+     * @param an_implicant 
+     * @param the_on_set - the on set of the function being optimized
+     * @param the_dc_set - the dc set of the function being optimized
+     * @return true if implicant successfully expanded, else false
+    */
     bool espresso_command::expand(std::string& an_implicant, implicants& the_on_set, implicants& the_dc_set) {
         auto has_expanded = false;
         for (unsigned int j = 0; j < an_implicant.size(); j++) {
@@ -72,6 +97,7 @@ namespace sis {
                 // attempt to expand
                 auto expanded_implicant = helpers::replace_char(an_implicant, j, "-");
                 if (validity_check(expanded_implicant, the_on_set, the_dc_set)) {
+                    // ok to expand
                     an_implicant = expanded_implicant;
                     has_expanded = true;
                 }
@@ -80,6 +106,7 @@ namespace sis {
         return has_expanded;
     }
 
+    // TODO
     bool espresso_command::reduce(const std::string& an_implicant, implicants& a_function) {
         return false;
     }
@@ -90,7 +117,7 @@ namespace sis {
      * @param the_on_set 
      * @return true
     */
-    bool espresso_command::remove_covered_implicants(const std::string& an_implicant, implicants& the_on_set) {
+    bool espresso_command::remove_covered_implicants(const std::string& an_implicant, implicants& the_on_set) const {
         std::vector<std::string> removal_list;
         // for each implicant in the on set
         for (auto on_implicant : the_on_set) {
@@ -98,7 +125,7 @@ namespace sis {
             auto covered = true;
             // for every literal in the implicant
             for (unsigned int i = 0; i < on_implicant.size(); i++) {
-                if (an_implicant[i] != '-') { // what if the literal in the on set is a don't care?
+                if (an_implicant[i] != '-') { 
                     // check for a discrepancy
                     if (an_implicant[i] != on_implicant[i]) {
                         covered = false;
@@ -106,15 +133,16 @@ namespace sis {
                 }
             }
             // ignore discrepancy if the implicants match
-            if (an_implicant == on_implicant) { // move this
+            // TODO: perform this check earlier
+            if (an_implicant == on_implicant) { 
                 covered = false;
             }
             // mark the implicant for removal if it is covered
-            // TODO: verify error does occur as a result of deferring removal until all checks are made
             if (covered) {
                 removal_list.push_back(on_implicant);
             }
         }
+        // remove implicants marked for removal
         for (const auto& the_string : removal_list) {
             auto itr = std::find(the_on_set.begin(), the_on_set.end(), the_string);
             if (itr != the_on_set.end())

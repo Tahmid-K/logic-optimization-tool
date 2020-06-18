@@ -12,14 +12,14 @@ namespace sis {
     }
 
     void covers::add_on_set(const std::string& an_implicant, const unsigned int an_index) {
-        if(on_set_.size() > an_index) {
-            on_set_[an_index].push_back(an_implicant); 
+        if(on_sets_.size() > an_index) {
+            on_sets_[an_index].push_back(an_implicant); 
         }
     }
 
     void covers::add_dc_set(const std::string& an_implicant, const unsigned int an_index) {
-        if(dc_set_.size() > an_index) {
-            dc_set_[an_index].push_back(an_implicant); 
+        if(dc_sets_.size() > an_index) {
+            dc_sets_[an_index].push_back(an_implicant); 
         }
     }
 
