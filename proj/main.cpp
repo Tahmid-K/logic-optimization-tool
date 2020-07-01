@@ -7,7 +7,7 @@
 
 int main() {
     auto run = true;
-    std::cout << "UC San Diego, SIS Clone 1.1 (compiled June 17 2020 22:17:01)" << std::endl;
+    std::cout << "UC San Diego, SIS Clone 1.1 (compiled June 18 2020 06:10:23)" << std::endl;
     auto* the_cmd_handler = new sis::command_handler();
     do {
         std::string the_user_input;       
